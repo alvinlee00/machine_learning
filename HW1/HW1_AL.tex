@@ -1,0 +1,381 @@
+%:
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+
+
+\title{Introduction to Machine Learning (CSCI-UA.473): Homework 1}
+\author{Alvin Lee}
+\date{06 September 2022}
+
+
+\begin{document}
+\maketitle
+
+\section*{Solutions}
+\subsection*{Probability and Calculus}
+\subsubsection*{Question 1}
+
+We begin this question by considering all the possible outcomes where Player 1 wins.
+Player 1 wins if and only if Player 1 is the first to succeed. Lets denote a success for 
+Player 1 as P1 and a miss as P1', and the same for Player 2. The winning combinations for
+Player 1, assuming Player 1 shoots first are:
+\[P1, P1'P2'P1, P1'P2'P1'P2'P1, P1'P2'P1'P2'P1'P2'P1, \ldots\]
+And so the probability that Player 1 wins is the sum of the probabilities of the winning combinations, 
+which is as follows:
+\begin{equation}
+  \mathbb{P}(Win) = \mathbb{P}(P1) + \mathbb{P}(P1')\mathbb{P}(P2')\mathbb{P}(P1) + \mathbb{P}(P1')\mathbb{P}(P2')\mathbb{P}(P1')\mathbb{P}(P2')\mathbb{P}(P1) + \ldots
+\end{equation}
+We know that $\mathbb{P}(P1) = \frac{1}{5}$, $\mathbb{P}(P2) = \frac{1}{4}$ and since a player either succeeds or misses, this implies that
+$\mathbb{P}(P1') = 1 - \mathbb{P}(P1) = \frac{4}{5}$, and for the same reason $\mathbb{P}(P2') = \frac{3}{4}$
+We can see from equation (1) that this becomes the summation:
+\begin{equation}
+  \mathbb{P}(Win) = \frac{1}{5} + \sum_{n=0}^{\infty}
+    \left(
+      \left({\frac{3}{4}}\right)^{n}
+      \left(\frac{4}{5}\right)^n
+      \left(\frac{1}{5}\right)
+    \right)
+\end{equation}
+We can simplify this summation with the following steps:
+
+\[
+  \mathbb{P}(Win) = \frac{1}{5} + \sum_{n=0}^{\infty}
+    \left(
+      \left({\frac{3}{5}}\right)^{n}
+      \left(\frac{1}{5}\right)
+    \right)
+\]
+\[
+  \mathbb{P}(Win) = \frac{1}{5} + \left(\frac{1}{5}\right)
+  \sum_{n=0}^{\infty}\left({\frac{3}{5}}\right)^{n}
+\]
+By using the formula
+\begin{equation}
+\sum_{a=0}^{\infty}{a^i} = \frac{1}{1-a}\ , \ |a| < 1
+\end{equation}
+We finish with 
+\[
+  P(Win) = \frac{1}{5} + \frac{1}{5}\cdot
+  \frac{1}{1-\frac{3}{5}} = \frac{1}{5} + \frac{1}{5}\cdot\frac{5}{2}
+  = \frac{1}{5} + \frac{1}{2} = \frac{7}{10}
+\]
+So the probability that Player 1 wins given Player 1 goes first is
+\begin{equation}
+  \mathbb{P}(Win) = \frac{7}{10}
+\end{equation}
+
+
+\subsubsection*{Question 2}
+The initial thought when starting this problem is to use Bayes Theorem which states:
+\begin{equation}
+  \label{eq:bayes}
+  P(A|B) = \frac{P(B | A) P(A)}{P(B)}
+\end{equation}
+In the case of this question, we can state $P(A)$ as the probability that you have COVID, and
+$P(B)$ as the probability that you test positive. We are given that $P(A) = 0.01$, $P(B|A) = 0.9$, and $P(B|A') = 0.1$
+where $A'$ is the situation that you do \textbf{not} have COVID. Before using Bayes Theorem, we must find $P(B)$.
+We can use the following formula: 
+\newline
+given $P(Y) + P(Y') = 1$,
+\begin{equation}
+  P(X) = P(X | Y)P(Y) + P(X | Y')P(Y')
+\end{equation}
+Which we derive from the following steps:
+\[P(X) = P(X \cap Y) + P(X \cap Y')\]
+\[P(X) = \frac{P(X \cap Y)P(Y)}{P(Y)} + \frac{P(X \cap Y')P(Y')}{P(Y')}\]
+\[P(X) = P(X | Y)P(Y) + P(X | Y')P(Y')\]
+Using this equation:
+\[P(B) = P(B|A)P(A) + P(B|A')P(A')\]
+\[P(B) = 0.9\cdot 0.01 + 0.1 \cdot 0.99\]
+\[P(B) = 0.009 + 0.099 = 0.108\]
+Finally, we now use Bayes Theorem to find the solution:
+\[P(A|B) = \frac{0.9\cdot 0.01}{0.108} \approx 0.0833\]
+The probability you have COVID given you tested positive is $8.33\%$
+
+\subsubsection*{Question 3}
+We will consider if the following function is a Probability Density Function (PDF)
+
+\begin{equation}
+  f(x) = \left\{
+  \begin{array}{cl}
+    0 & for \ x < 0\\
+    \frac{1}{(1+x)}  & otherwise
+  \end{array}
+  \right.
+\end{equation}
+A Probability Density Funciton must satisfy two conditions
+\begin{enumerate}[label=(\roman*)]
+  \item $f(x)$ must be nonnegative for each value of the random variable
+  \item The integral over all values of the random variable must equal 1
+\end{enumerate}
+We know that $f(x)$ is nonnegative for each value of the random variable. 
+Now we solve the integral over all values of the random variable. We know 
+$f(x) = 0, \ \forall \ x < 0$, so to find the integral we solve
+\begin{equation}
+  \int_{0}^{\infty}{\frac{1}{(1+x)}dx}
+\end{equation}
+Which we can do by the following
+\[\int_{0}^{\infty}\frac{1}{(1+x)}dx = ln(1+x) \ \bigg|_{0}^{\infty} = \infty\]
+We can conclude that the integral over all values of the random variable is greater than 1, so (ii) is not satisfied,
+meaning $f(x)$ is not a PDF
+\subsubsection*{Question 4}
+Given two independent variables $X$ and $Y$ with the same density function:
+\begin{equation}
+  f(x) = \left\{
+  \begin{array}{cl}
+    2x & if \ 0 \leq x \leq 1\\
+    0  & otherwise
+  \end{array}
+  \right.
+\end{equation}
+Since X and Y are independent random variables, the joint probability density function of X
+and Y is:
+\begin{equation}
+  f_{x,y}(x,y) = f_x(x)f_y(y)
+\end{equation}
+We calculate $P(X+Y \leq 1)$
+\[P(X + Y \leq 1)\]
+\[= \int\int_{\{x+y\leq 1\}}f(x)f(y)dxdy\]
+\[= \int\int_{\{x\geq 0, y\geq 0, x+y\leq 1\}}f(x)f(y)dxdy\]
+\[= \int_0^1\int_0^{1-y}f(x)f(y)dxdy\]
+
+\[= \int_0^1 2y(x^2 \ \bigg|_0^{1-y})dy\]
+\[= 2\int_0^1 y(1-2y+y^2)dy\]
+\[= \frac{y^4}{4}-\frac{2y^3}{3}+\frac{y^2}{2} \ \bigg|_0^1\]
+\[= 2(\frac{1}{4} - \frac{2}{3} + \frac{1}{2})\]
+\[= \frac{1}{6}\]
+\subsubsection*{Question 5}
+We compute expected value by using the following equation:
+\begin{equation}
+  \mathbb{E}(Y) = \int_{-\infty}^{\infty}yf(y)dy
+\end{equation}
+We know $Y = g(X) = e^X$ and $X \sim Unif(0,1)$ which implies $f_X(x) = 1$.
+We can find 
+\[\mathbb{E}(Y) = \mathbb{E}(e^X) = \int_{0}^{1}e^xf(x)dx = \int_0^1e^xdx = e^x\bigg|_0^1 = e-1 \]
+
+\subsubsection*{Question 6}
+We know $X_i \sim Poisson(\lambda)$. The Central Limit Theorem states, for $X_1, \ldots , X_n$
+i.i.d with mean $\mu $ and variance ${\sigma}^2$ Let $\overline{X_n} = n^{-1}\sum_{i=1}^n$. Then
+\begin{equation}
+  Z_n \equiv \frac{\sqrt{n}(\overline{X_n}-\mu)}{\sigma} \xrightarrow{d} Z
+\end{equation}
+This states that with large enough $n$, the average of random variables has a distribution
+that is approximately normal.
+\newline
+We know $\mu = mean of X_i = \lambda = 5$ and also for a poisson distribution $\lambda = var(X_i) = \sigma^2 = 5$
+Using the Central Limit Theorem, we know:
+\begin{align}
+  Z_n = \frac{\sqrt{n}(\overline{X_n}-\mu)}{\sigma} = \frac{\sqrt{125}(\overline{X_n}-5)}{\sqrt{5}} = 5(\overline{X_n}-5) \sim Z
+\end{align}
+We can compute
+\begin{align}
+  P(\overline{X}_n \leq 5.5) = P(5(\overline{X}_n - 5) \leq 5(5.5-5)) \approx P(Z \leq 2.5)
+\end{align}
+We can use a z-score table to find that
+\[P(Z\leq 2.5) = 0.9938\]
+
+\subsubsection*{Question 7}
+Let $X_n = f(W_n, X_{n-1})$ for $n = 1, \ldots, P$, for some function $f()$.
+\newline
+we can show the following:
+\begin{equation}
+  \frac{\partial{X_n}}{\partial{X_0}} = \partial_2 f(W_n, X_{n-1}) \frac{\partial{X_{n-1}}}{\partial{X_0}},\  n = 1, \ldots, P
+\end{equation}
+By the chain rule, we can find for 
+\begin{equation}
+  E = \| C - X_p \|^2
+\end{equation}
+\begin{equation}
+  \frac{\partial E}{\partial X_0} = -2\| C - X_P\| \cdot \frac{\partial{X_P}}{\partial{X_0}}
+\end{equation}
+\[= -2\|C - X_P\| \cdot \partial_2 f(W_P, X_{P-1}) \cdot \ldots \cdot 
+\partial_2 f(W_1, X_{0}) \frac{\partial{X_{0}}}{\partial{0}}\]
+\[= -2\|C - X_P\| \cdot \partial_2 f(W_P, X_{P-1}) \cdot \ldots \cdot 
+\partial_2 f(W_1, X_{0}) \cdot 1\]
+
+
+
+\subsection*{Linear Algebra}
+\subsubsection*{Question 8}
+Let $A$ be the matrix
+$\begin{bmatrix}
+  2 & 6 & 7\\
+  3 & 1 & 2\\
+  5 & 3 & 4\\
+\end{bmatrix}$
+and let $x$ be the column vector
+$\begin{bmatrix}
+  2\\
+  3\\
+  4\\
+\end{bmatrix}$.
+We can write $A^T$ as 
+$\begin{bmatrix}
+  2 & 3 & 5\\
+  6 & 1 & 3\\
+  7 & 2 & 4\\
+\end{bmatrix}$ and $x^T$ as 
+$\begin{bmatrix}
+  2 & 3 & 4
+\end{bmatrix}$
+We can compute the matricies by using the following formula. For $B$ = 
+$\begin{bmatrix}
+  r_{1}\\
+  r_{2}\\
+  r_{3}
+\end{bmatrix}$ where $r$ is a row of $B$ and $C$ = 
+$\begin{bmatrix}
+  c_{1} &
+  c_{2} &
+  c_{3}
+\end{bmatrix}$ where $c$ is a column of $C$
+\begin{equation}
+  BC = \begin{bmatrix}
+    r_1c_1 & r_1c_2 & r_1c_3 \\
+    r_2c_1 & r_2c_2 & r_2c_3 \\
+    r_3c_1 & r_3c_2 & r_3c_3
+  \end{bmatrix}
+\end{equation}
+Using this equation we can find
+\begin{align}
+  Ax = 
+  \begin{bmatrix}
+    2*2 + 6*3 + 7*4 \\
+    3*2 + 1*3 + 2*4 \\
+    5*2 + 3*3 + 4*4
+  \end{bmatrix} = 
+  \begin{bmatrix}
+    50 \\
+    17 \\
+    35
+  \end{bmatrix}
+\end{align}
+\begin{align}
+  A^T = 
+  \begin{bmatrix}
+    2 & 3 & 5\\
+    6 & 1 & 3\\
+    7 & 2 & 4
+  \end{bmatrix}
+\end{align}
+\begin{align}
+  x^TA = 
+\end{align}
+\[\begin{bmatrix}
+  (2*2+3*3+4*5)& (2*6+3*1+4*3)& (2*7 + 3*2 + 4*4)
+\end{bmatrix} \]
+\[= \begin{bmatrix}
+  33 & 27 & 36
+\end{bmatrix}\]
+\subsubsection*{Question 9}
+We know the following statement is true: If $A$ is a square matrix and $det(A) \neq 0$ then A is
+invertible. 
+\begin{enumerate}[label=(\alph*)]
+\item
+Let $A = \begin{bmatrix}
+  6 & 2 & 3\\
+  3 & 1 & 1\\
+  10 & 3 & 4
+\end{bmatrix}$
+\begin{equation}
+  det(A) = 6(det(
+    \begin{bmatrix} 
+      1 & 1 \\ 3 & 4 
+    \end{bmatrix}))
+  - 2(det(
+    \begin{bmatrix}
+    3 & 1 \\ 10 & 4
+    \end{bmatrix}))  
+  + 3(det(
+    \begin{bmatrix}
+    3 & 1 \\ 10 & 3
+  \end{bmatrix}))
+\end{equation}
+\[ = 6(1) - 2(2) + 3(-1) = -1 \neq 0\]
+
+So $A$ is invertible. Now we find the inverse of $A$. We know by definition of inverse matricies,
+that $AA^{-1} = I$. We can therefore find $A^{-1}$ by finding elementary matricies $E_1, E_2, \ldots$
+such that $(E_1E_2\ldots)A = I$ and let $(E_1E_2\ldots) = A^{-1}$. After doing these steps,
+we find that:
+\[A^{-1} = \begin{bmatrix}
+  -1 & -1 & 1 \\ 2 & 6 & -3 \\ 1 & -2 & 0
+\end{bmatrix}\]
+\item
+Let $B = \begin{bmatrix}
+  1 & 2 & 3\\
+  0 & 2 & 2\\
+  1 & 4 & 5
+\end{bmatrix}$
+\begin{equation}
+  det(B) = 0 + 2(det(
+    \begin{bmatrix}
+      1 & 3 \\ 1 & 5
+    \end{bmatrix}
+  )) - 2(det(
+    \begin{bmatrix}
+      1 & 2 \\ 1 & 4
+    \end{bmatrix}
+  ))
+\end{equation}
+\[= 2(2) - 2(2) = 0\]
+So $B$ is not invertible.
+
+\end{enumerate}
+
+\subsubsection*{Question 10}
+An eigenvalue, often denoted as $\lambda \in \mathbb{R} $ is the scalar factor such that
+when a linear transformation is applied to a vector, the result differs from the vector
+by a factor of $\lambda$. The eigenvector is the corresponding vector that changes by 
+the eigenvalue when the linear transformation is applied. In other words, the eigenvalue is
+such that, for a matrix $A$ and a vector $v$
+\begin{equation}
+  Av = \lambda v
+\end{equation}
+To find the eigenvector and eigenvalues, we can solve:
+\[
+  Av - \lambda v = 0
+\]
+\begin{equation}
+  (A-\lambda I)v = 0
+\end{equation}
+for non-zero vector $v$, this will only have a solution if
+\[ \det (A-\lambda I) = 0\]
+We can use the above to find the eigenvalues. Once we have the eigenvalues we can just them plug into 
+the equation (25) and find the associated eigenvectors.
+\newline
+Using the above method to compute the eigen values, we can find:
+
+\begin{equation}
+  \det\left( \begin{bmatrix}
+    1-\lambda & 0 & -1 \\
+    1 & 0-\lambda & 0 \\
+    -2 & 2 & 1-\lambda
+  \end{bmatrix}\right) = 0
+\end{equation}
+
+\begin{equation}
+  (1-\lambda)\det\left( 
+  \begin{bmatrix}
+    -\lambda & 0 \\ 2 & 1-\lambda
+  \end{bmatrix}\right) - 
+  1(\det\left( 
+  \begin{bmatrix}
+    1 & -\lambda \\ -2 & 2
+  \end{bmatrix}\right)) = 0
+\end{equation}
+\begin{equation}
+  -\lambda^3 + 2\lambda^2 + \lambda - 2 = 0
+\end{equation}
+\begin{equation}
+  (-\lambda^2 + 1)(\lambda - 2) = 0
+\end{equation}
+\begin{equation}
+  \lambda = 1, -1, 2
+\end{equation}
+
+
+\end{document}
+
+
+

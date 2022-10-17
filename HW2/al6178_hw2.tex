@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{amsmath,amssymb}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\newcommand\iidsim{\stackrel{\mathclap{iid}}{\sim}}
+
+\title{Introduction to Machine Learning
+(CSCI-UA.473): Homework 2}
+\author{Alvin Lee}
+\date{September 20, 2022}
+
+\begin{document}
+
+\maketitle
+
+\section*{Solutions}
+\subsection*{Question 1}
+
+It is not reasonable to assign equal weights to the cost associated with each training example.
+By definition we can define the expected true cost function as:
+
+\begin{equation}
+  \mathbb{E}_x[E(g(x),f(x))] = \sum_{i=1}^NE(g(x),f(x))p_X(x)
+\end{equation}
+The equation given in the problem assumes that $p_X(x)$ which is the probability that the 
+event $x$ occurs is $\frac{1}{N}$. Since we established that not every data $x$ is equally likely
+we need to weigh each per-example cost differently. We should weigh it based on the probability
+$p_X(x)$ (the probability that the event x occurs)
+
+\subsection*{Question 2}
+
+\begin{enumerate}
+  \item We can find the expected value of Y given a number by the following:
+  \[\mathbb{E}[Y|X = 0] = \mathbb{E}(5 + 0.5(0) + \epsilon_i) = \mathbb{E}(5) + \mathbb{E}(\epsilon_i) = 5 + 0 = 5\]
+  \[\mathbb{E}[Y|X=-2] = \mathbb{E}(5 + 0.5(-2) + \epsilon_i) = \mathbb{E}(5) + \mathbb{E}(-1) + \mathbb{E}(\epsilon_i) = 5 - 1 = 4\]
+  To find varience, we can use the following expression: 
+  \begin{equation}
+    Var(X) = \mathbb{E}[X^2] - \mathbb{E}[X]^2
+  \end{equation}
+  $\forall x \in \mathbb{R}$,
+  \[Var(Y|X = x) = \mathbb{E}((5+0.5x+\epsilon_i)^2) - \mathbb{E}(5+0.5x+\epsilon_i)^2\]
+  Expanding this out, we get:
+  \[= \mathbb{E}(25 + 0.25x^2 + \epsilon_i^2 + 5x + 10\epsilon_i + x\epsilon_i) - (\mathbb{E}(5) + \mathbb{E}(0.5x))^2\]
+  We know that $\mathbb{E}(\epsilon_i^2) = Var(\epsilon_i) + \mathbb{E}(\epsilon_i)^2 = Var(\epsilon_i) = 1$. Since $x$ is constant,
+  \[= 25 + 0.25x^2 + 5x + 1 - (5 + 0.5x)^2 = 1\]
+  Since $\forall x \in \mathbb{R}, \ Var(Y|X=x) = 1 \implies Var(Y|X) = 1$
+  \item The probability of $Y > 5$ given $X = 2$ is:
+  \[P(5 + 1 + \epsilon_i > 5) = P(\epsilon_i > -1)\]
+  Given that $\epsilon_i \overset{idd}\sim N(0,1)$ we can find
+  \[P(\epsilon_i > -1) = \int_{-1}^{\infty} \frac{e^{- \frac{x^2}{2}}}{\sqrt{2\pi}}\]
+  We can use the z-score table to estimate this integral:
+  \[P(\epsilon_i > -1) \approx 0.8413\] 
+  \item Given $\mathbb{E}[X] = 0$ and $Var(X) = 10$ 
+  \[\mathbb{E}[Y] = \mathbb{E}[5 + X_i + \epsilon_i] = \mathbb{E}[5] + \mathbb{E}[X] + \mathbb{E}[\epsilon_i] = 5 + 0 + 0 = 5\]
+  \[Var[Y] = \mathbb{E}[Y^2] - \mathbb{E}[Y]^2\]
+  \[ = \mathbb{E}[25 + 0.25X_i^2 + \epsilon_i^2 + 5X_i + 10\epsilon_i + X_i\epsilon_i] - 25\]
+  \[= 25 + 0.25\mathbb{E}[X_i^2] + \mathbb{E}[\epsilon_i^2] - 25\]
+  We know that $\mathbb{E}[\alpha^2] = Var(\alpha) + \mathbb{E}[\alpha]^2$. Since $\mathbb{E}[X_i] = 0$ and $\mathbb{E}[\epsilon_i] = 0$,
+  \[= 0.25(10) + 1 = 3.5\]
+  \item $Cov(X,Y) = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y] = \mathbb{E}[XY] - 0 = \mathbb{E}[X(5 + 0.5X + \epsilon_i)] = \mathbb{E}[5X + 0.5X^2 + \epsilon_iX] = 0 + 0.5(10) + 0 = 5$
+  
+\end{enumerate}
+
+\subsection*{Question 3}
+For each observation, when we derive when $\hat{\theta}$ is at the minima, the derivative of
+the loss function is:
+\begin{equation}
+  \hat\theta_i = (xx^T)^{-1}x(y-\epsilon_i)
+\end{equation}
+Given a set of N observations, we can give equal weights to each observation, finding that the approximate $\hat\theta$ is:
+\begin{equation}
+  \mathbb{E}(\hat\theta) = \frac{1}{N}\sum_{i=0}^N(xx^T)^{-1}x(y-\epsilon_i)
+\end{equation}
+However, given a weight $w_i$ for each $x_i$ we can find the weighted least squares estimate $\hat\theta$ as:
+\begin{equation}
+  \mathbb{E}(\hat\theta) = \sum_{i=0}^{N}w_i(xx^t)^{-1}x(y-\epsilon_i)
+\end{equation}
+\subsection*{Question 4}
+A linear regression is used to predict an $n \ x \ 1$ matrix given a $d \ x\ n$ matrix.
+On the other hand, a logistic regression is used for classification. For example, it will take an input of data
+and the output is a classification placed into a bin, either 0 or 1.
+An equation for linear regression is $Y = X^Tw$, where $Y$ is a vector of $n$ x $1$
+On the other hand, the equation for a logistic regression is a probability function,
+$p(y) = \frac{e^{w^Tx}}{{1 + e^{w^Tx}}}$.
+
+
+\end{document}
+
